@@ -306,10 +306,30 @@
 
                 summaryContainer.innerHTML = `<h2>ผลการทดสอบของคุณ ${userName}</h2>
                                               <h2>คะแนนที่ได้: ${score} / ${totalQuestions}</h2>`;
+                  this.disabled = true;
+
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbwpcjV4bOsBjKh50A77fIUG1cJEWM2hHAitsOaGgRTh_q57N2e6-91yxk-IIX_0MF7n/exec';
                 
-                this.disabled = true;
-                this.textContent = 'ส่งคำตอบแล้ว';
-                
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: userName,
+                        score: score,
+                        total: totalQuestions,
+                        answers: []
+                    })
+                })
+                .then(() => {
+                    console.log('ข้อมูลถูกส่งไปยัง Google Sheet แล้ว!');
+                })
+                .catch(error => {
+                    console.error('เกิดข้อผิดพลาดในการส่งข้อมูล:', error);
+                });
+
                 MathJax.typesetPromise();
             });
         });
@@ -326,4 +346,7 @@
         <div id="quiz-summary"></div>
     </div>
 </body>
+
 </html>
+      
+    
